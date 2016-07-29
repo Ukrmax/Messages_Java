@@ -26,9 +26,16 @@ public class Browser extends Base_browser {
     String message_text_field = "//div[@class='composer-area nonbounce']";
     String text = "This is a test message!";
     String send_message_button = "//button[@title='Send Message Enabled']";
-    String test_message_locator = "//span[contains(text(), 'Some text')]";
+    String test_message_locator = "//span[contains(test_message_text(), 'Some test_message_text')]";
     String avatar_icons = "//div[@class='icons avatar-group']";
     String jpg_image_in_conversation = "//img[@data-filename='jpg.jpg']";
+    String message_bubble = "//div[@class='msgBubbleContent']";
+    String conversation_menu = "//button[@class='btn btn-transparent btn-icon xpndBtnOverride']";
+    String conversation_menu_delete_button = "//ul[@class='popMenu']/li[3]";
+    String conversation_add_to_favorite_button = "//ul[@class='popMenu']/li[2]";
+    String message_with_image = "//div[@class='icons icon-attach-image-18px']";
+
+
 
     @BeforeMethod
     public void setUp() throws InterruptedException {
@@ -51,7 +58,6 @@ public class Browser extends Base_browser {
         fill_out_text_field("id", user_password_field, user_password);
         click_on_element("id", enter_credentials_submit_button);
         wait_for_element("id", confirm_wireless_number_page);
-
     }
 
     public void enter_pin_and_submit(String code) {
@@ -78,5 +84,32 @@ public class Browser extends Base_browser {
         is_element_present("xpath", jpg_image_in_conversation);
     }
 
+    public void is_test_message_is_present_in_wui_conversation() {
+        is_element_present("xpath", test_message_locator);
+    }
+
+    public void delete_conversation_from_message_with_text() {
+        click_on_element("xpath", test_message_locator);
+        WebElement el = find_element("xpath", message_bubble);
+        hover_over_element(el);
+        click_on_element("xpath", conversation_menu);
+        click_on_element("xpath", conversation_menu_delete_button);
+    }
+
+    public void delete_conversation_from_message_with_image() {
+        click_on_element("xpath", message_with_image);
+        WebElement el = find_element("xpath", jpg_image_in_conversation);
+        hover_over_element(el);
+        click_on_element("xpath", conversation_menu);
+        click_on_element("xpath", conversation_menu_delete_button);
+    }
+
+    public void mark_conversation_as_favorite() {
+        click_on_element("xpath", test_message_locator);
+        WebElement el = find_element("xpath", message_bubble);
+        hover_over_element(el);
+        click_on_element("xpath", conversation_menu);
+        click_on_element("xpath", conversation_add_to_favorite_button);
+    }
 
 }

@@ -1,17 +1,12 @@
 package pageObjects.pages;
 
-import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import org.junit.Assert;
-import org.junit.Before;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.How;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
-import sel.*;
 
 
 import java.net.URL;
@@ -23,25 +18,26 @@ public class Messages extends Base {
 
     AndroidDriver driver;
 
-    String phone_number = "";
-    String text = "This is a test message";
+    static String phone_number = "";
+    static String user_id = "";
+    String test_message_text = "This is a test message";
 
     String star_icon = "//android.widget.ImageView[@content-desc='Favorite']";
     String favorites_button = "com.att.android.mobile.attmessages:id/filterbarSavedButton";
     String empty_messages_section = "android:id/empty";
     String any_avatar = "com.att.android.mobile.attmessages:id/avatar";
     String message_text_balloon = "com.att.android.mobile.attmessages:id/balloonText";
-    String delete_message_from_conversation = "//android.widget.TextView[@text='Delete Message']";
+    String delete_message_from_conversation = "//android.widget.TextView[@test_message_text='Delete Message']";
     String delete_All_confirmation_button = "com.att.android.mobile.attmessages:id/primaryButton";
     String all_button = "android:id/selectAll";
     String menu_button = "//android.widget.ImageButton[@content-desc='Menu']";
-    String delete_menu_button = "//android.widget.TextView[@text='Delete']";
+    String delete_menu_button = "//android.widget.TextView[@test_message_text='Delete']";
     String delete_All_button = "com.att.android.mobile.attmessages:id/ListEditClearAllBt";
 
     String messages_app_package_name = "com.att.android.mobile.attmessages";
     String messages_app_activity_name = "com.att.ui.screen.ConversationListScreen";
 
-    String message_with_code = "//android.widget.TextView[@text='(746)118-88']";
+    String message_with_code = "//android.widget.TextView[@test_message_text='(746)118-88']";
     String conversation_header = "com.att.android.mobile.attmessages:id/ConversationScreenUsername";
     String att_sent_code_number = "(746)118-88";
     String create_new_message_btn = "com.att.android.mobile.attmessages:id/action_new_message";
@@ -55,11 +51,22 @@ public class Messages extends Base {
     String plus_button_message_text_field = "com.att.android.mobile.attmessages:id/cts_insertButton";
     String attach_general_button = "com.att.android.mobile.attmessages:id/cts_attach_general";
     String attach_section_from_button = "android:id/up";
-    String attach_section_image_button = "//android.widget.TextView[@text='Images']";
-    String image_folder = "//android.widget.TextView[@text='Image_formats']";
-    String jpg_file = "//android.widget.TextView[@text='jpg.jpg']";
+    String attach_section_image_button = "//android.widget.TextView[@test_message_text='Images']";
+    String image_folder = "//android.widget.TextView[@test_message_text='Image_formats']";
+    String jpg_file = "//android.widget.TextView[@test_message_text='jpg.jpg']";
     String attach_section_camera_three_dot_menu = "//android.widget.ImageButton[@content-desc='More options']";
-    String attach_section_camera_list_view = "//android.widget.TextView[@text='List view']";
+    String attach_section_camera_list_view = "//android.widget.TextView[@test_message_text='List view']";
+
+    String one_image_in_message_text_filed = "Image attachment\n";
+
+    String call_button = "com.att.android.mobile.attmessages:id/action_bar_call";
+
+    String conversation_buble = "com.att.android.mobile.attmessages:id/conversationBubble";
+
+    String message_text_on_initial_page = "com.att.android.mobile.attmessages:id/info";
+    String mms_message_text_on_initial_page = "1 photo attached";
+
+    public static String m = "";
 
     @BeforeMethod
     public void setUp() throws Exception{
@@ -75,7 +82,7 @@ public class Messages extends Base {
 
         //killing all background apps
         try {
-            find_element("xpath", "//android.widget.TextView[@text='No recent apps']");
+            find_element("xpath", "//android.widget.TextView[@test_message_text='No recent apps']");
         } catch (Exception e) {
             driver.pressKeyCode(187);
             find_element("id", "com.android.systemui:id/recents_RemoveAll_button_kk").click();
@@ -161,7 +168,20 @@ public class Messages extends Base {
         create_new_message();
         type_phone_number(phone_number);
         fill_message_text_field();
-        tap_on_element("id", send_message_button);
+        tap_on_the_send_message_button();
+    }
+
+    public void create_and_send_message_to_himself() {
+        create_new_message();
+        type_phone_number(user_id);
+        fill_message_text_field();
+        tap_on_the_send_message_button();
+    }
+
+    public void create_and_send_mms_with_image_to_himself() {
+        create_new_message();
+        type_phone_number(user_id);
+        attach_jpg_image_to_message();
     }
 
     public void create_new_message() {
@@ -199,8 +219,8 @@ public class Messages extends Base {
     }
 
     public void fill_message_text_field() {
-        fill_out_field("id", message_text_locator, text);
-        assert_text("id", message_text_locator, text);
+        fill_out_field("id", message_text_locator, test_message_text);
+        assert_text("id", message_text_locator, test_message_text);
     }
 
     public void send_jpg_image() {
@@ -234,5 +254,75 @@ public class Messages extends Base {
         tap_on_element("id", send_message_button);
     }
 
+    public void verify_message_is_sent() {
+        String el = find_element("id", message_text_balloon).getText();
+        Assert.assertEquals(el, test_message_text);
+    }
+
+    public void verify_message_with_image_is_sent() {
+           String el = find_element("id", message_text_balloon).getText();
+            Assert.assertEquals(el, one_image_in_message_text_filed);
+    }
+
+    public void make_a_call_from_sent_message() {
+           tap_on_element("id", call_button);
+    }
+
+    public void verify_that_message_is_sent_and_received_to_the_same_number() {
+        try {
+            List<WebElement> bubbles = find_elements("id", conversation_buble);
+            assert bubbles.size() == 2;
+        }  catch (Exception e) {
+            System.out.println("No sent message in the Conversation!");
+        }
+        String el = find_element("id", message_text_balloon).getText();
+        Assert.assertEquals(el, test_message_text);
+    }
+
+    public void verify_image_is_sent_and_recived_to_the_same_number() {
+        try {
+            List<WebElement> bubbles = find_elements("id", conversation_buble);
+            assert bubbles.size() == 2;
+        }  catch (Exception e) {
+            System.out.println("No sent message in the Conversation!");
+        }
+        String el = find_element("id", conversation_buble).getAttribute("name");
+        Assert.assertEquals(el, one_image_in_message_text_filed);
+    }
+
+    public void assert_message_is_not_present() {
+        String el = find_element("id", message_text_on_initial_page).getText();
+        Assert.assertNotEquals(el, test_message_text);
+    }
+
+    public void assert_mms_message_is_not_present() {
+        String el = find_element("id", mms_message_text_on_initial_page).getText();
+        Assert.assertNotEquals(el, test_message_text);
+    }
+
+    public void verify_conversation_message_is_deleted() {
+        try {
+            assert_message_is_not_present();
+        } catch (Exception e) {
+            //add 10 sec time waiting
+            assert_message_is_not_present();
+        }
+    }
+
+    public void verify_mms_message_is_deleted() {
+        try {
+            assert_mms_message_is_not_present();
+        } catch (Exception e) {
+            //add 10 sec time waiting
+            assert_mms_message_is_not_present();
+        }
+    }
+
+    public void verify_message_is_in_favorites() {
+        tap_on_element("id", favorites_button);
+        String el = find_element("id", message_text_on_initial_page).getText();
+        Assert.assertEquals(el, test_message_text);
+        is_element_present("xpath", star_icon);
+    }
 
 }

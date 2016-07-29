@@ -4,6 +4,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -89,6 +91,11 @@ public class Base_browser {
 
     public void send_text_using_action_chains(String text) {
 
+    }
+
+    public void hover_over_element(WebElement element) {
+        Actions hover = new Actions(driver);
+        hover.moveToElement(element).perform();
     }
 
 
