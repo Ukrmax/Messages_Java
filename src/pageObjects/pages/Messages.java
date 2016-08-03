@@ -96,13 +96,13 @@ public class Messages extends Base {
 
     public void delete_all_messages() {
         //verification if favorites messages are present if yes then deleting them
-         List<WebElement> el = driver.findElementsByXPath(star_icon);
+         List<WebElement> el = driver.findElements("xpath",star_icon);
         if (el.size() != 0) {
             find_element("id", favorites_button);
             try {
                 find_element("id", empty_messages_section);
             } catch (NoSuchElementException e) {
-                List<WebElement> el1 = driver.findElementsById(any_avatar);
+                List<WebElement> el1 = driver.findElements("id", any_avatar);
                 for (int i=0; i<=el1.size(); i++) {
                     el1.get(0).click();
                     try {
@@ -117,7 +117,6 @@ public class Messages extends Base {
             }
         }
         //deleting regular messages
-        find_element("id", "sdgsglsh");
         tap_on_element("id", all_button);
         try {
            find_element("id", empty_messages_section);
@@ -215,6 +214,12 @@ public class Messages extends Base {
             int el_num = Integer.parseInt(li.get(count));
             code_list.add(count, keycode.get(el_num).toString());
             count++;
+        }
+
+        int i = 0;
+        while (i < code_list.size()) {
+            send_key_code(Integer.parseInt(code_list.get(i)));
+            i ++;
         }
     }
 

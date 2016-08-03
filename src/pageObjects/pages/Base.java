@@ -89,4 +89,8 @@ public class Base {
         }
     }
 
+    public void send_key_code(int key_number) {
+        driver.pressKeyCode(key_number);
+    }
+
 }

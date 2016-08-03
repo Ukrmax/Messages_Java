@@ -98,7 +98,4 @@ public class Base_browser {
         hover.moveToElement(element).perform();
     }
 
-
-
-
 }
